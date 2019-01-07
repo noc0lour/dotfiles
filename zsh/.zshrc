@@ -93,16 +93,6 @@ source $ZSH/oh-my-zsh.sh
  alias zshconfig="vim ~/.zshrc"
  alias ohmyzsh="vim ~/.oh-my-zsh"
 
- alias fstroll="ssh pc-03 -o ProxyCommand='ssh -q fs nc pc-03.fs-etec.kit.edu 22' PULSE_SERVER=unix:/tmp/pulse-bd mpg123 ~/Badum-tss.mp3 > /dev/null 2>&1"
- alias fspartey="ssh pc-03 -o ProxyCommand='ssh -q fs nc pc-03.fs-etec.kit.edu 22' ~/fspartey.sh"
- alias fsmystery="ssh pc-03 -o ProxyCommand='ssh -q fs nc pc-03.fs-etec.kit.edu 22' ~/fsmystery.sh"
- alias fsshame="ssh pc-03 -o ProxyCommand='ssh -q fs nc pc-03.fs-etec.kit.edu 22' PULSE_SERVER=unix:/tmp/pulse-bd mpg123 ~/shame-1.mp3 > /dev/null 2>&1"
-
- function astassh(){
-    ssh -o ProxyCommand="ssh asta-tunnel nc ${1} 22" root@${1}
- }
-
 #Special Keybindings
 bindkey "\e[1~" beginning-of-line
 bindkey "\e[4~" end-of-line
-. "/home/andrej/.acme.sh/acme.sh.env"
