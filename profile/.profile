@@ -28,7 +28,8 @@ export OS_AUTH_URL=https://oprod-controller1.osuosl.org:5000/v3
 export OS_COMPUTE_API_VERSION=2.1
 export OS_IDENTITY_API_VERSION=3
 
-source /usr/bin/virtualenvwrapper.sh
+
+source $(which virtualenvwrapper.sh)
 alias nocomment=/usr/local/bin/nocomment.sh
 function gfmu (){
 	  $commits = git log --pretty="%H" --author="$@" 
