@@ -4,3 +4,6 @@
 [submodule "zsh-themes/.oh-my-zsh/custom/themes/powerlevel9k"]
 	path = zsh-themes/.oh-my-zsh/custom/themes/powerlevel9k
 	url = https://github.com/bhilburn/powerlevel9k.git
+[submodule "spacemacs/.emacs.d"]
+	path = spacemacs/.emacs.d
+	url = https://github.com/syl20bnr/spacemacs.git
