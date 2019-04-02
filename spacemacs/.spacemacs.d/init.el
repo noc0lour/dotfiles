@@ -74,12 +74,12 @@ This function should only modify configuration layer settings."
      ;; version-control
      (c-c++ :variables
              c-c++-enable-clang-support t
-             c-c++-enable-c++11 t)
-             ;; c-c++-enable-rtags-support t)
+             c-c++-enable-c++11 t
+             c-c++-backend 'rtags
+             )
      (cmake :variables
             cmake-enable-cmake-ide-support t)
-            ;; cmake-ide-flags-c t
-            ;; cmake-ide-flags-c++ t)
+     debug
      python
      java
      yaml
@@ -232,7 +232,7 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-colorize-cursor-according-to-state t
 
-   ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
+   ;; Default nont, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("xos4 Terminess Powerline"
                                :size 14
@@ -493,6 +493,7 @@ you should place your code here."
   (setq max-lisp-eval-depth 10000)
   ;; (require 'meson-mode)
   (require 'ox-wk)
+  (require 'iso-transl)
   (exec-path-from-shell-copy-env "SSH_AGENT_PID")
   (exec-path-from-shell-copy-env "SSH_AUTH_SOCK")
   (evil-leader/set-key
@@ -531,7 +532,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (writeroom-mode visual-fill-column magithub ghub+ apiwrap magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht org-mime epl ghub let-alist pythonic dash-functional tern simple-httpd winum org-category-capture fuzzy company-ansible skewer-mode sql-indent phpunit phpcbf php-extras php-auto-yasnippets drupal-mode php-mode yapfify yaml-mode ws-butler which-key web-mode use-package toc-org ssh-agency spacemacs-theme spaceline powerline smeargle restart-emacs pyvenv pug-mode persp-mode pcre2el orgit org org-projectile org-plus-contrib org-download open-junk-file nginx-mode neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lua-mode live-py-mode link-hint js2-refactor info+ indent-guide hungry-delete highlight-indentation hide-comnt help-fns+ helm-projectile helm-make projectile helm-gitignore request helm-flx helm-company helm-c-yasnippet helm-ag google-translate gitattributes-mode git-timemachine git-messenger git-link ggtags flycheck-pos-tip flycheck eyebrowse expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-nerd-commenter evil-mc evil-matchit evil-magit magit git-commit with-editor evil-exchange evil-escape evil-ediff evil-anzu dumb-jump dockerfile-mode docker json-mode magit-popup dash disaster diminish company-statistics company-emacs-eclim eclim company-c-headers column-enforce-mode coffee-mode clang-format bind-key auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link auto-complete avy anaconda-mode auctex yasnippet company highlight iedit smartparens bind-map evil helm helm-core alert hydra f haml-mode js2-mode s window-numbering web-beautify volatile-highlights vmd-mode vi-tilde-fringe uuidgen undo-tree tagedit tablist slim-mode scss-mode sass-mode rainbow-delimiters quelpa pytest pyenv-mode py-isort pos-tip popwin popup pkg-info pip-requirements paradox org-present org-pomodoro org-bullets multiple-cursors lorem-ipsum log4e livid-mode linum-relative less-css-mode json-snatcher json-reformat js-doc jinja2-mode ido-vertical-mode hy-mode htmlize hl-todo highlight-parentheses highlight-numbers helm-themes helm-swoop helm-pydoc helm-mode-manager helm-gtags helm-descbinds helm-css-scss grandshell-theme goto-chg golden-ratio gnuplot gntp gitignore-mode gitconfig-mode gh-md gandalf-theme flx-ido fill-column-indicator fancy-battery evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-lisp-state evil-indent-plus evil-iedit-state evil-args eval-sexp-fu emmet-mode elisp-slime-nav dtrt-indent docker-tramp define-word cython-mode company-web company-tern company-auctex company-anaconda cmake-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auctex-latexmk async anzu ansible-doc ansible ace-jump-helm-line ac-ispell)))
+    (yasnippet-snippets racer json-navigator doom-modeline diff-hl counsel-projectile counsel swiper ivy company-go rust-mode visual-fill-column magithub ghub+ apiwrap magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht org-mime epl ghub let-alist pythonic dash-functional tern simple-httpd winum org-category-capture fuzzy company-ansible skewer-mode sql-indent phpunit phpcbf php-extras php-auto-yasnippets drupal-mode php-mode yapfify yaml-mode ws-butler which-key web-mode use-package toc-org ssh-agency spacemacs-theme spaceline powerline smeargle restart-emacs pyvenv pug-mode persp-mode pcre2el orgit org org-projectile org-plus-contrib org-download open-junk-file nginx-mode neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lua-mode live-py-mode link-hint js2-refactor info+ indent-guide hungry-delete highlight-indentation hide-comnt help-fns+ helm-projectile helm-make projectile helm-gitignore request helm-flx helm-company helm-c-yasnippet helm-ag google-translate gitattributes-mode git-timemachine git-messenger git-link ggtags flycheck-pos-tip flycheck eyebrowse expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-nerd-commenter evil-mc evil-matchit evil-magit magit git-commit with-editor evil-exchange evil-escape evil-ediff evil-anzu dumb-jump dockerfile-mode docker json-mode magit-popup dash disaster diminish company-statistics company-emacs-eclim eclim company-c-headers column-enforce-mode coffee-mode clang-format bind-key auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link auto-complete avy anaconda-mode auctex yasnippet company highlight iedit smartparens bind-map evil helm helm-core alert hydra f haml-mode js2-mode s window-numbering web-beautify volatile-highlights vmd-mode vi-tilde-fringe uuidgen undo-tree tagedit tablist slim-mode scss-mode sass-mode rainbow-delimiters quelpa pytest pyenv-mode py-isort pos-tip popwin popup pkg-info pip-requirements paradox org-present org-pomodoro org-bullets multiple-cursors lorem-ipsum log4e livid-mode linum-relative less-css-mode json-snatcher json-reformat js-doc jinja2-mode ido-vertical-mode hy-mode htmlize hl-todo highlight-parentheses highlight-numbers helm-themes helm-swoop helm-pydoc helm-mode-manager helm-gtags helm-descbinds helm-css-scss grandshell-theme goto-chg golden-ratio gnuplot gntp gitignore-mode gitconfig-mode gh-md gandalf-theme flx-ido fill-column-indicator fancy-battery evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-lisp-state evil-indent-plus evil-iedit-state evil-args eval-sexp-fu emmet-mode elisp-slime-nav dtrt-indent docker-tramp define-word cython-mode company-web company-tern company-auctex company-anaconda cmake-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auctex-latexmk async anzu ansible-doc ansible ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
     ((TeX-engine . pdflatex)
