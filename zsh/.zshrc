@@ -96,3 +96,17 @@ source $ZSH/oh-my-zsh.sh
 #Special Keybindings
 bindkey "\e[1~" beginning-of-line
 bindkey "\e[4~" end-of-line
+
+function gfmu (){
+    commits=("${(@f)$(git log --pretty="%H" --author="$@")}")
+    files=""
+    for commit_hash in $commits
+    do
+        new_files=$(git show --oneline --name-only $commit_hash | tail -n+2)
+        files="${files}${new_files}\n"
+    done
+    user_files=$(echo $files | sort -u)
+    echo $user_files
+
+}
+
