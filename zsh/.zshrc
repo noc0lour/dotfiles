@@ -13,9 +13,10 @@ ZSH_THEME="powerlevel9k/powerlevel9k"
 
 DEFAULT_USER="andrej"
 
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status time)
+P9K_PROMPT_ON_NEWLINE=true
+P9K_RPROMPT_ON_NEWLINE=true
+P9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv time)
+#P9K_LEFT_PROMPT_ELEMENTS=()
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
@@ -58,8 +59,8 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status time)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(encode64 systemd git github cp nmap tmux-cssh portage colorize ssh-agent ssh)
-#POWERLEVEL9K_MODE='awesome-patched'
+plugins=(encode64 systemd git github cp nmap tmux-cssh colorize ssh-agent ansible virtualenvwrapper)
+#P9K_MODE='awesome-patched'
 
 # User configuration
 
@@ -109,4 +110,3 @@ function gfmu (){
     echo $user_files
 
 }
-
