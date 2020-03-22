@@ -94,9 +94,17 @@ source $ZSH/oh-my-zsh.sh
  alias zshconfig="vim ~/.zshrc"
  alias ohmyzsh="vim ~/.oh-my-zsh"
 
-#Special Keybindings
+#Special Keybindings urxvt
 bindkey "\e[1~" beginning-of-line
 bindkey "\e[4~" end-of-line
+
+#Fix keybindings for termite
+bindkey "${terminfo[khome]}" beginning-of-line
+bindkey "${terminfo[kend]}" end-of-line
+bindkey "\e[3~" delete-char
+bindkey "${terminfo[kich1]}" quoted-insert
+bindkey "\e[H" beginning-of-line
+bindkey "\e[F" end-of-line
 
 function gfmu (){
     commits=("${(@f)$(git log --pretty="%H" --author="$@")}")
