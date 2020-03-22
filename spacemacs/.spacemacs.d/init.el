@@ -54,7 +54,6 @@ This function should only modify configuration layer settings."
      helm
      (auto-completion :variables
                       auto-completion-enable-help-tooltip 'manual
-                      auto-completion-enable-sort-by-usage t
                       )
      ;; better-defaults
      emacs-lisp
