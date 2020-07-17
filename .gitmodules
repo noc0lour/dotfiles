@@ -7,3 +7,6 @@
 [submodule "spacemacs/.emacs.d"]
 	path = spacemacs/.emacs.d
 	url = https://github.com/syl20bnr/spacemacs.git
+[submodule "zsh-themes/.oh-my-zsh/custom/themes/powerlevel10k"]
+	path = zsh-themes/.oh-my-zsh/custom/themes/powerlevel10k
+	url = https://github.com/romkatv/powerlevel10k.git
