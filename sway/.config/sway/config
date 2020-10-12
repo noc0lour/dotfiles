@@ -15,15 +15,19 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term termite
+set $term kitty
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
-set $menu dmenu_path | dmenu | xargs swaymsg exec --
+#set $menu bemenu_path | bemenu | xargs swaymsg exec --
+#set $menu bemenu-run --fn $uifont -b -p "▶" --tf "$prompt" --hf "$highlight" --sf "$highlight" --scf "$highlight" | xargs swaymsg exec
+set $menu dmenu_path | wofi --show run -l 2 -i | xargs swaymsg exec --
 
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg ~/.config/awesome/background.png fill
+output * bg ~/.config/sway/background.jpg fill
+output DP-1 pos 0 0 mode 2560x1440@59.951000Hz
+output DP-2 pos 2560 0 mode 2560x1440@59.951000Hz
 #
 # Example configuration:
 #
@@ -71,16 +75,17 @@ exec xrdb -load ~/.Xresources
 #
 # Basics:
     default_border none
-    font pango:Open Sans 12
+    font pango:Terminess Powerline 12
     input type:keyboard {
-        xkb_layout de
-        xkb_variant neo
+        xkb_layout de,de
+        xkb_variant neo,
         xkb_options grp:alt_shift_toggle
     }
     # Start a terminal
     bindsym $mod+Return exec $term
 
-    bindsym $mod+r exec $term --name sway-launcher -e sway-launcher
+#    bindsym $mod+r exec $term --name sway-launcher -e sway-launcher
+    bindsym $mod+r exec $menu
     for_window [app_id="^sway-launcher$"] floating enable, border none
 
     bindsym $mod+p exec grim -g "$(slurp -d)" - | wl-copy -t image/png
@@ -99,7 +104,7 @@ exec xrdb -load ~/.Xresources
     bindsym $mod+Shift+r reload
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+e exit
 #
 # Moving around:
 #
