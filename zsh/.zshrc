@@ -7,7 +7,7 @@ fi
 
 # Path to your oh-my-zsh installation.
 export ZSH=/home/andrej/.oh-my-zsh
-export TERM="rxvt-unicode-256color"
+#export TERM="rxvt-unicode-256color"
 
 source ~/.profile
 
@@ -20,10 +20,10 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 DEFAULT_USER="andrej"
 
-P9K_PROMPT_ON_NEWLINE=true
-P9K_RPROMPT_ON_NEWLINE=true
-P9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv time)
-#P9K_LEFT_PROMPT_ELEMENTS=()
+POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv time)
+#POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=()
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
@@ -66,8 +66,8 @@ P9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv time)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(encode64 systemd git github cp nmap tmux-cssh colorize ssh-agent ansible virtualenvwrapper)
-#P9K_MODE='awesome-patched'
+plugins=(dnf encode64 systemd git github cp nmap tmux-cssh colorize ssh-agent ansible virtualenvwrapper)
+#POWERLEVEL9K_MODE='awesome-patched'
 
 # User configuration
 
