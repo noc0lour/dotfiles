@@ -10,6 +10,7 @@ export PKG_CONFIG_PATH
 export GOPATH="/home/andrej/gopath"
 export PATH="/usr/lib/ccache/bin/:$GOPATH/bin/:"$PATH":/usr/local/sbin/:/usr/sbin/:/sbin/"
 # set input method to uim so .XCompose works
+export INPUT_METHOD=uim
 export GTK_IM_MODULE=uim
 export QT_IM_MODULE=uim
 export XMODIFIERS=@im=uim
