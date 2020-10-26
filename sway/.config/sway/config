@@ -176,12 +176,14 @@ exec xrdb -load ~/.Xresources
 
     # Toggle the current focus between tiling and floating mode
     bindsym $mod+Shift+space floating toggle
+    bindsym $mod+Ctrl+space sticky toggle
 
     # Swap focus between the tiling area and the floating area
     bindsym $mod+space focus mode_toggle
 
     # Move focus to the parent container
     bindsym $mod+a focus parent
+    bindsym $mod+Shift+a move parent
 #
 # Scratchpad:
 #
@@ -237,3 +239,7 @@ bar {
 }
 
 include /etc/sway/config.d/*
+
+
+# Application specific config
+for_window [title="^Extension: .* Mozilla Firefox$"] floating enable, border none
