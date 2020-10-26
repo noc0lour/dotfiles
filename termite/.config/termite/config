@@ -1,5 +1,6 @@
 [options]
 font = xos4 Terminess Powerline 14px
+scrollback_lines = 100000
 
 [colors]
 # Base16 Google Dark
