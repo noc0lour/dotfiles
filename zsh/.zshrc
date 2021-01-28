@@ -1,7 +1,7 @@
 # Path to your oh-my-zsh installation.
 ZSH_THEME="powerlevel10k/powerlevel10k"
 export ZSH=/home/andrej/.oh-my-zsh
-export TERM="rxvt-unicode-256color"
+#export TERM="rxvt-unicode-256color"
 
 source ~/.profile
 
