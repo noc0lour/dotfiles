@@ -79,7 +79,6 @@ exec xrdb -load ~/.Xresources
 #
 # Basics:
     default_border none
-    font pango:Terminess Powerline 12
     input type:keyboard {
         xkb_layout de,de
         xkb_variant neo,
