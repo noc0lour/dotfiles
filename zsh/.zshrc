@@ -4,7 +4,14 @@ export ZSH=${HOME}/.oh-my-zsh
 
 source ~/.profile
 
-plugins=(encode64 systemd git github cp nmap tmux-cssh colorize ssh-agent ansible pyenv)
+plugins=(encode64 systemd git github cp nmap tmux-cssh colorize ssh-agent ansible)
+
+system=$(uname -s)
+if [ "${system}" = "Darwin" ]; then
+	plugins+=('pyenv')
+elif [ "${system}" = "Linux" ]; then
+	plugins+=('virtualenvwrapper')
+fi
 
 source $ZSH/oh-my-zsh.sh
 
@@ -68,4 +75,6 @@ function gfmu (){
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-pyenv virtualenvwrapper
+if [ "${system}" = "Darwin" ]; then
+	pyenv virtualenvwrapper
+fi
