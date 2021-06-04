@@ -21,7 +21,6 @@ export WORKON_HOME=$HOME/Projekte/python/envs
 export PROJECT_HOME=$HOME/Projekte
 export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/library
 
-source $(which virtualenvwrapper.sh)
 alias nocomment=/usr/local/bin/nocomment.sh
 function gfmu (){
 	  $commits = git log --pretty="%H" --author="$@"
@@ -40,3 +39,6 @@ if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
     startx
 fi
 . "$HOME/.cargo/env"
+#export PYENV_ROOT="$HOME/.pyenv"
+#export PATH="$PYENV_ROOT/bin:$PATH"
+#eval "$(pyenv init --path)"

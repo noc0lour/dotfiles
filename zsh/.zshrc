@@ -1,11 +1,10 @@
 # Path to your oh-my-zsh installation.
 ZSH_THEME="powerlevel10k/powerlevel10k"
-export ZSH=/home/andrej/.oh-my-zsh
-#export TERM="rxvt-unicode-256color"
+export ZSH=${HOME}/.oh-my-zsh
 
 source ~/.profile
 
-plugins=(encode64 systemd git github cp nmap tmux-cssh colorize ssh-agent ansible virtualenvwrapper)
+plugins=(encode64 systemd git github cp nmap tmux-cssh colorize ssh-agent ansible pyenv)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -69,3 +68,4 @@ function gfmu (){
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+pyenv virtualenvwrapper
