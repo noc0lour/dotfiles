@@ -64,6 +64,7 @@ This function should only modify configuration layer settings."
      github
      (gtags :disabled-for c-c++)
      latex
+     lsp
      (markdown :variables markdown-live-preview-engine 'vmd)
      multiple-cursors
      neotree
@@ -247,7 +248,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default nont, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("xos4 Terminess Powerline"
+   dotspacemacs-default-font '("TerminessRegular Nerd Font"
                                :size 14
                                :weight normal
                                :width normal)
