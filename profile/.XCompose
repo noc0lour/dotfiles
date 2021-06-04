@@ -10,6 +10,7 @@
 # $XFree86: xc/nls/Compose/en_US.UTF-8,v 1.13 2004/05/08 06:10:16 pascal Exp $
 
 # Part 1 - Manual definitions
+include "%L"
 
 # Spacing versions of dead accents
 <dead_tilde> <space>			: "~"	asciitilde

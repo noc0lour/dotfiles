@@ -19,6 +19,7 @@ export PYTHONSTARTUP=~/.pythonrc
 #configure virtualenvwrapper
 export WORKON_HOME=$HOME/Projekte/python/envs
 export PROJECT_HOME=$HOME/Projekte
+export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/library
 
 source $(which virtualenvwrapper.sh)
 alias nocomment=/usr/local/bin/nocomment.sh
@@ -38,3 +39,4 @@ if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
     xrdb -merge ~/.Xresources
     startx
 fi
+. "$HOME/.cargo/env"
