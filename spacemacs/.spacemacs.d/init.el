@@ -32,7 +32,7 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
+   '(csv
      major-modes
      erlang
      octave
@@ -41,6 +41,7 @@ This function should only modify configuration layer settings."
      nixos
      windows-scripts
      sql
+     pdf
      php
      javascript
      nginx
@@ -60,13 +61,20 @@ This function should only modify configuration layer settings."
      ;; better-defaults
      emacs-lisp
      git
-     github
-     (gtags :disabled-for c-c++)
+     ;; (gtags :disabled-for c-c++)
+     (ipython-notebook :variables ein-backend 'jupyter)
      latex
+     (lsp :variables
+          lsp-python-ms-update-server nil
+          lsp-python-ms-auto-install-server nil
+          lsp-disabled-clients '(mspyls)
+          ;; lsp-pylsp-configuration-sources '(flake8)
+          )
+     bibtex
      (markdown :variables markdown-live-preview-engine 'vmd)
      multiple-cursors
-     neotree
-     docker
+    neotree
+    docker
      (org :variables org-enable-reveal-js-support t)
      ;; (shell :variables
      ;;        shell-default-height 30
@@ -80,19 +88,22 @@ This function should only modify configuration layer settings."
      (c-c++ :variables
              c-c++-enable-clang-support t
              c-c++-enable-c++11 t
-             c-c++-backend 'rtags
+             c-c++-backend 'lsp-clangd
              )
-     (cmake :variables
-            cmake-enable-cmake-ide-support t)
+     cmake
      debug
      (python :variables
              python-formatter 'black
              python-test-runner 'pytest
              python-pylint nil
+             python-backend 'lsp
+             python-lsp-server 'pylsp
              )
+     dart
      java
      yaml
      (templates :variables templates-private-directory "~/.spacemacs.d/templates")
+     dap
      )
 
    ;; List of additional packages that will be installed without being
@@ -111,7 +122,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-frozen-packages '()
 
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(matlab-mode)
 
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
@@ -136,18 +147,18 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-enable-emacs-pdumper nil
 
-   ;; File path pointing to emacs 27.1 executable compiled with support
-   ;; for the portable dumper (this is currently the branch pdumper).
-   ;; (default "emacs-27.0.50")
-   dotspacemacs-emacs-pdumper-executable-file "emacs-27.0.50"
+   ;; Name of executable file pointing to emacs 27+. This executable must be
+   ;; in your PATH.
+   ;; (default "emacs")
+   dotspacemacs-emacs-pdumper-executable-file "emacs"
 
    ;; Name of the Spacemacs dump file. This is the file will be created by the
    ;; portable dumper in the cache directory under dumps sub-directory.
    ;; To load it when starting Emacs add the parameter `--dump-file'
    ;; when invoking Emacs 27.1 executable on the command line, for instance:
-   ;;   ./emacs --dump-file=~/.emacs.d/.cache/dumps/spacemacs.pdmp
-   ;; (default spacemacs.pdmp)
-   dotspacemacs-emacs-dumper-dump-file "spacemacs.pdmp"
+   ;;   ./emacs --dump-file=$HOME/.emacs.d/.cache/dumps/spacemacs-27.1.pdmp
+   ;; (default (format "spacemacs-%s.pdmp" emacs-version))
+   dotspacemacs-emacs-dumper-dump-file (format "spacemacs-%s.pdmp" emacs-version)
 
    ;; If non-nil ELPA repositories are contacted via HTTPS whenever it's
    ;; possible. Set it to nil if you have no way to use HTTPS in your
@@ -280,7 +291,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default nont, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("xos4 Terminess Powerline"
+   dotspacemacs-default-font '("TerminessTTF Nerd Font Mono Medium"
                                :size 14
                                :weight normal
                                :width normal)
@@ -582,6 +593,7 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (setq mac-option-modifier 'none)
+  (add-to-list 'image-types 'svg)
 
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (dtrt-indent-mode)
@@ -596,7 +608,18 @@ you should place your code here."
   (evil-leader/set-key
     "q q" 'spacemacs/frame-killer)
   (setq flycheck-disabled-checkers '(python-pylint python-mypy))
+  (setq flycheck-python-flake8-executable "pflake8")
+  (require 'dap-lldb)
+  (menu-bar-mode -1)
   )
+
+(defun file-notify-rm-all-watches ()
+  "Remove all existing file notification watches from Emacs."
+  (interactive)
+  (maphash
+   (lambda (key _value)
+     (file-notify-rm-watch key))
+   file-notify-descriptors))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -628,13 +651,12 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
-   (quote
-    (org-caldav magithub ghub+ apiwrap magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht org-mime epl ghub let-alist pythonic dash-functional tern simple-httpd winum org-category-capture fuzzy company-ansible skewer-mode sql-indent phpunit phpcbf php-extras php-auto-yasnippets drupal-mode php-mode yapfify yaml-mode ws-butler which-key web-mode use-package toc-org ssh-agency spacemacs-theme spaceline powerline smeargle restart-emacs pyvenv pug-mode persp-mode pcre2el orgit org org-projectile org-plus-contrib org-download open-junk-file nginx-mode neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lua-mode live-py-mode link-hint js2-refactor info+ indent-guide hungry-delete highlight-indentation hide-comnt help-fns+ helm-projectile helm-make projectile helm-gitignore request helm-flx helm-company helm-c-yasnippet helm-ag google-translate gitattributes-mode git-timemachine git-messenger git-link ggtags flycheck-pos-tip flycheck eyebrowse expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-nerd-commenter evil-mc evil-matchit evil-magit magit git-commit with-editor evil-exchange evil-escape evil-ediff evil-anzu dumb-jump dockerfile-mode docker json-mode magit-popup dash disaster diminish company-statistics company-emacs-eclim eclim company-c-headers column-enforce-mode coffee-mode clang-format bind-key auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link auto-complete avy anaconda-mode auctex yasnippet company highlight iedit smartparens bind-map evil helm helm-core alert hydra f haml-mode js2-mode s window-numbering web-beautify volatile-highlights vmd-mode vi-tilde-fringe uuidgen undo-tree tagedit tablist slim-mode scss-mode sass-mode rainbow-delimiters quelpa pytest pyenv-mode py-isort pos-tip popwin popup pkg-info pip-requirements paradox org-present org-pomodoro org-bullets multiple-cursors lorem-ipsum log4e livid-mode linum-relative less-css-mode json-snatcher json-reformat js-doc jinja2-mode ido-vertical-mode hy-mode htmlize hl-todo highlight-parentheses highlight-numbers helm-themes helm-swoop helm-pydoc helm-mode-manager helm-gtags helm-descbinds helm-css-scss grandshell-theme goto-chg golden-ratio gnuplot gntp gitignore-mode gitconfig-mode gh-md gandalf-theme flx-ido fill-column-indicator fancy-battery evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-lisp-state evil-indent-plus evil-iedit-state evil-args eval-sexp-fu emmet-mode elisp-slime-nav dtrt-indent docker-tramp define-word cython-mode company-web company-tern company-auctex company-anaconda cmake-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auctex-latexmk async anzu ansible-doc ansible ace-jump-helm-line ac-ispell)))
+   '(csv-mode magithub ghub+ apiwrap magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht org-mime epl ghub let-alist pythonic dash-functional tern simple-httpd winum org-category-capture fuzzy company-ansible skewer-mode sql-indent phpunit phpcbf php-extras php-auto-yasnippets drupal-mode php-mode yapfify yaml-mode ws-butler which-key web-mode use-package toc-org ssh-agency spacemacs-theme spaceline powerline smeargle restart-emacs pyvenv pug-mode persp-mode pcre2el orgit org org-projectile org-plus-contrib org-download open-junk-file nginx-mode neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lua-mode live-py-mode link-hint js2-refactor info+ indent-guide hungry-delete highlight-indentation hide-comnt help-fns+ helm-projectile helm-make projectile helm-gitignore request helm-flx helm-company helm-c-yasnippet helm-ag google-translate gitattributes-mode git-timemachine git-messenger git-link ggtags flycheck-pos-tip flycheck eyebrowse expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-nerd-commenter evil-mc evil-matchit evil-magit magit git-commit with-editor evil-exchange evil-escape evil-ediff evil-anzu dumb-jump dockerfile-mode docker json-mode magit-popup dash disaster diminish company-statistics company-emacs-eclim eclim company-c-headers column-enforce-mode coffee-mode clang-format bind-key auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link auto-complete avy anaconda-mode auctex yasnippet company highlight iedit smartparens bind-map evil helm helm-core alert hydra f haml-mode js2-mode s window-numbering web-beautify volatile-highlights vmd-mode vi-tilde-fringe uuidgen undo-tree tagedit tablist slim-mode scss-mode sass-mode rainbow-delimiters quelpa pytest pyenv-mode py-isort pos-tip popwin popup pkg-info pip-requirements paradox org-present org-pomodoro org-bullets multiple-cursors lorem-ipsum log4e livid-mode linum-relative less-css-mode json-snatcher json-reformat js-doc jinja2-mode ido-vertical-mode hy-mode htmlize hl-todo highlight-parentheses highlight-numbers helm-themes helm-swoop helm-pydoc helm-mode-manager helm-gtags helm-descbinds helm-css-scss grandshell-theme goto-chg golden-ratio gnuplot gntp gitignore-mode gitconfig-mode gh-md gandalf-theme flx-ido fill-column-indicator fancy-battery evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-lisp-state evil-indent-plus evil-iedit-state evil-args eval-sexp-fu emmet-mode elisp-slime-nav dtrt-indent docker-tramp define-word cython-mode company-web company-tern company-auctex company-anaconda cmake-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auctex-latexmk async anzu ansible-doc ansible ace-jump-helm-line ac-ispell))
  '(safe-local-variable-values
-   (quote
-    ((TeX-engine . pdflatex)
-     (TeX-command-extra-options . "-shell-escape")))))
+   '((TeX-engine . pdflatex)
+     (TeX-command-extra-options . "-shell-escape"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
