@@ -8,7 +8,7 @@ export SUDO_SYSTEMD_EDITOR="$EDITOR"
 export LD_LIBRARY_PATH="/usr/local/lib:/usr/lib:"$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH
 export GOPATH=$(go env GOPATH)
-export PATH="/opt/homebrew/opt/gnu-tar/libexec/gnubin:/opt/homebrew/opt/llvm/bin:/usr/lib/ccache/bin/:$GOPATH/bin/:"$PATH":/usr/local/sbin/:/usr/sbin/:/sbin/"
+export PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/opt/gnu-tar/libexec/gnubin:/opt/homebrew/opt/llvm/bin:/usr/lib/ccache/bin/:$GOPATH/bin/:"$PATH":/usr/local/sbin/:/usr/sbin/:/sbin/:/Users/andrej/.local/bin/"
 # set input method to uim so .XCompose works
 export INPUT_METHOD=uim
 export GTK_IM_MODULE=uim
