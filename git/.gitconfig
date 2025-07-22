@@ -5,3 +5,6 @@
 
 [core]
 	excludesfile = ~/.config/git/global_ignore
+
+[includeIf "gitdir:~/git/cel/"]
+  path = ~/git/cel/.gitconfig
