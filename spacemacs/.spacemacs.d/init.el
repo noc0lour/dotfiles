@@ -65,16 +65,15 @@ This function should only modify configuration layer settings."
      (ipython-notebook :variables ein-backend 'jupyter)
      latex
      (lsp :variables
-          lsp-python-ms-update-server nil
-          lsp-python-ms-auto-install-server nil
-          lsp-disabled-clients '(mspyls)
+          lsp-use-lsp-ui nil
+          lsp-rust-server 'rust-analyzer
           ;; lsp-pylsp-configuration-sources '(flake8)
           )
      bibtex
      (markdown :variables markdown-live-preview-engine 'vmd)
      multiple-cursors
-    neotree
-    docker
+     neotree
+     docker
      (org :variables org-enable-reveal-js-support t)
      ;; (shell :variables
      ;;        shell-default-height 30
@@ -86,24 +85,31 @@ This function should only modify configuration layer settings."
      semantic
      ;; version-control
      (c-c++ :variables
-             c-c++-enable-clang-support t
-             c-c++-enable-c++11 t
-             c-c++-backend 'lsp-clangd
-             )
+            c-c++-enable-clang-support t
+            c-c++-enable-c++11 t
+            c-c++-backend 'lsp-clangd
+            )
      cmake
+     meson
      debug
      (python :variables
              python-formatter 'black
              python-test-runner 'pytest
              python-pylint nil
              python-backend 'lsp
-             python-lsp-server 'pylsp
+             python-lsp-server 'pyright
              )
      dart
      java
      yaml
      (templates :variables templates-private-directory "~/.spacemacs.d/templates")
      dap
+     unicode-fonts
+     terraform
+     (tree-sitter :variables
+                  tree-sitter-syntax-highlight-enable t
+                  tree-sitter-fold-enable t
+                  )
      )
 
    ;; List of additional packages that will be installed without being
@@ -117,6 +123,7 @@ This function should only modify configuration layer settings."
                                       ssh-agency
                                       dtrt-indent
                                       org-caldav
+                                      typst-ts-mode
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -141,9 +148,13 @@ It should only modify the values of Spacemacs settings."
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
-   ;; If non-nil then enable support for the portable dumper. You'll need
-   ;; to compile Emacs 27 from source following the instructions in file
+   ;; If non-nil then enable support for the portable dumper. You'll need to
+   ;; compile Emacs 27 from source following the instructions in file
    ;; EXPERIMENTAL.org at to root of the git repository.
+   ;;
+   ;; WARNING: pdumper does not work with Native Compilation, so it's disabled
+   ;; regardless of the following setting when native compilation is in effect.
+   ;;
    ;; (default nil)
    dotspacemacs-enable-emacs-pdumper nil
 
@@ -176,14 +187,14 @@ It should only modify the values of Spacemacs settings."
    ;; This is an advanced option and should not be changed unless you suspect
    ;; performance issues due to garbage collection operations.
    ;; (default '(100000000 0.1))
-   dotspacemacs-gc-cons '(100000000 0.1)
+   dotspacemacs-gc-cons '(200000000 0.1)
 
    ;; Set `read-process-output-max' when startup finishes.
    ;; This defines how much data is read from a foreign process.
    ;; Setting this >= 1 MB should increase performance for lsp servers
    ;; in emacs 27.
    ;; (default (* 1024 1024))
-   dotspacemacs-read-process-output-max (* 1024 1024)
+   dotspacemacs-read-process-output-max (* 1024 1024 3)
 
    ;; If non-nil then Spacelpa repository is the primary source to install
    ;; a locked version of packages. If nil then Spacemacs will install the
@@ -228,6 +239,13 @@ It should only modify the values of Spacemacs settings."
    ;; If the value is nil then no banner is displayed. (default 'official)
    dotspacemacs-startup-banner 'official
 
+   ;; Scale factor controls the scaling (size) of the startup banner. Default
+   ;; value is `auto' for scaling the logo automatically to fit all buffer
+   ;; contents, to a maximum of the full image height and a minimum of 3 line
+   ;; heights. If set to a number (int or float) it is used as a constant
+   ;; scaling factor for the default logo size.
+   dotspacemacs-startup-banner-scale 'auto
+
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
    ;; Possible values for list-type are:
@@ -249,6 +267,11 @@ It should only modify the values of Spacemacs settings."
 
    ;; The minimum delay in seconds between number key presses. (default 0.4)
    dotspacemacs-startup-buffer-multi-digit-delay 0.4
+
+   ;; If non-nil, show file icons for entries and headings on Spacemacs home buffer.
+   ;; This has no effect in terminal or if "all-the-icons" package or the font
+   ;; is not installed. (default nil)
+   dotspacemacs-startup-buffer-show-icons nil
 
    ;; Default major mode for a new empty buffer. Possible values are mode
    ;; names such as `text-mode'; and `nil' to use Fundamental mode.
@@ -291,10 +314,17 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default nont, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("TerminessTTF Nerd Font Mono Medium"
-                               :size 14
-                               :weight normal
-                               :width normal)
+   dotspacemacs-default-font '(
+                               ("TerminessTTF Nerd Font Mono Medium"
+                                :size 14
+                                :weight normal
+                                :width normal)
+                               ("Source Code Pro for Powerline"
+                                :size 14
+                                :weight normal
+                                :width normal
+                                )
+                               )
 
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
@@ -396,8 +426,8 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-maximized-at-startup nil
 
    ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
-   ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
-   ;; borderless fullscreen. (default nil)
+   ;; variable with `dotspacemacs-maximized-at-startup' to obtain fullscreen
+   ;; without external boxes. Also disables the internal border. (default nil)
    dotspacemacs-undecorated-at-startup nil
 
    ;; A value from the range (0..100), in increasing opacity, which describes
@@ -409,6 +439,11 @@ It should only modify the values of Spacemacs settings."
    ;; the transparency level of a frame when it's inactive or deselected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
    dotspacemacs-inactive-transparency 90
+
+   ;; A value from the range (0..100), in increasing opacity, which describes the
+   ;; transparency level of a frame background when it's active or selected. Transparency
+   ;; can be toggled through `toggle-background-transparency'. (default 90)
+   dotspacemacs-background-transparency 90
 
    ;; If non-nil show the titles of transient states. (default t)
    dotspacemacs-show-transient-state-title t
@@ -434,8 +469,8 @@ It should only modify the values of Spacemacs settings."
    ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
    ;; `prog-mode' and `text-mode' derivatives. If set to `relative', line
    ;; numbers are relative. If set to `visual', line numbers are also relative,
-   ;; but lines are only visual lines are counted. For example, folded lines
-   ;; will not be counted and wrapped lines are counted as multiple lines.
+   ;; but only visual lines are counted. For example, folded lines will not be
+   ;; counted and wrapped lines are counted as multiple lines.
    ;; This variable can also be set to a property list for finer control:
    ;; '(:relative nil
    ;;   :visual nil
@@ -519,7 +554,9 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil - same as frame-title-format)
    dotspacemacs-icon-title-format nil
 
-   ;; Show trailing whitespace (default t)
+   ;; Color highlight trailing whitespace in all prog-mode and text-mode derived
+   ;; modes such as c++-mode, python-mode, emacs-lisp, html-mode, rst-mode etc.
+   ;; (default t)
    dotspacemacs-show-trailing-whitespace t
 
    ;; Delete whitespace while saving buffer. Possible values are `all'
@@ -529,14 +566,14 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-whitespace-cleanup 'changed
 
-   ;; If non nil activate `clean-aindent-mode' which tries to correct
-   ;; virtual indentation of simple modes. This can interfer with mode specific
+   ;; If non-nil activate `clean-aindent-mode' which tries to correct
+   ;; virtual indentation of simple modes. This can interfere with mode specific
    ;; indent handling like has been reported for `go-mode'.
    ;; If it does deactivate it here.
    ;; (default t)
    dotspacemacs-use-clean-aindent-mode t
 
-   ;; Accept SPC as y for prompts if non nil. (default nil)
+   ;; Accept SPC as y for prompts if non-nil. (default nil)
    dotspacemacs-use-SPC-as-y nil
 
    ;; If non-nil shift your number row to match the entered keyboard layout
@@ -556,7 +593,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-pretty-docs nil
 
    ;; If nil the home buffer shows the full path of agenda items
-   ;; and todos. If non nil only the file name is shown.
+   ;; and todos. If non-nil only the file name is shown.
    dotspacemacs-home-shorten-agenda-source nil
 
    ;; If non-nil then byte-compile some of Spacemacs files.
@@ -575,14 +612,16 @@ See the header of this file for more information."
 This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
-If you are unsure, try setting them in `dotspacemacs/user-config' first.")
+If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  )
 
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump.")
+dump."
+  )
 
 
 (defun dotspacemacs/user-config ()
@@ -594,6 +633,7 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (setq mac-option-modifier 'none)
   (add-to-list 'image-types 'svg)
+  (add-to-list 'exec-path "~/.local/bin")
 
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (dtrt-indent-mode)
@@ -608,9 +648,18 @@ you should place your code here."
   (evil-leader/set-key
     "q q" 'spacemacs/frame-killer)
   (setq flycheck-disabled-checkers '(python-pylint python-mypy))
-  (setq flycheck-python-flake8-executable "pflake8")
+  ;; (setq flycheck-python-flake8-executable "pflake8")
+  (setq lsp-idle-delay 1.500)
   (require 'dap-lldb)
   (menu-bar-mode -1)
+  (with-eval-after-load 'eglot
+    (with-eval-after-load 'typst-ts-mode
+      (add-to-list 'eglot-server-programs
+                   `((typst-ts-mode) .
+                     ,(eglot-alternatives `(,typst-ts-lsp-download-path
+                                            "tinymist"
+                                            "typst-lsp"))))))
+
   )
 
 (defun file-notify-rm-all-watches ()
@@ -646,21 +695,67 @@ you should place your code here."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(evil-want-Y-yank-to-eol nil)
- '(package-selected-packages
-   '(csv-mode magithub ghub+ apiwrap magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht org-mime epl ghub let-alist pythonic dash-functional tern simple-httpd winum org-category-capture fuzzy company-ansible skewer-mode sql-indent phpunit phpcbf php-extras php-auto-yasnippets drupal-mode php-mode yapfify yaml-mode ws-butler which-key web-mode use-package toc-org ssh-agency spacemacs-theme spaceline powerline smeargle restart-emacs pyvenv pug-mode persp-mode pcre2el orgit org org-projectile org-plus-contrib org-download open-junk-file nginx-mode neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lua-mode live-py-mode link-hint js2-refactor info+ indent-guide hungry-delete highlight-indentation hide-comnt help-fns+ helm-projectile helm-make projectile helm-gitignore request helm-flx helm-company helm-c-yasnippet helm-ag google-translate gitattributes-mode git-timemachine git-messenger git-link ggtags flycheck-pos-tip flycheck eyebrowse expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-nerd-commenter evil-mc evil-matchit evil-magit magit git-commit with-editor evil-exchange evil-escape evil-ediff evil-anzu dumb-jump dockerfile-mode docker json-mode magit-popup dash disaster diminish company-statistics company-emacs-eclim eclim company-c-headers column-enforce-mode coffee-mode clang-format bind-key auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link auto-complete avy anaconda-mode auctex yasnippet company highlight iedit smartparens bind-map evil helm helm-core alert hydra f haml-mode js2-mode s window-numbering web-beautify volatile-highlights vmd-mode vi-tilde-fringe uuidgen undo-tree tagedit tablist slim-mode scss-mode sass-mode rainbow-delimiters quelpa pytest pyenv-mode py-isort pos-tip popwin popup pkg-info pip-requirements paradox org-present org-pomodoro org-bullets multiple-cursors lorem-ipsum log4e livid-mode linum-relative less-css-mode json-snatcher json-reformat js-doc jinja2-mode ido-vertical-mode hy-mode htmlize hl-todo highlight-parentheses highlight-numbers helm-themes helm-swoop helm-pydoc helm-mode-manager helm-gtags helm-descbinds helm-css-scss grandshell-theme goto-chg golden-ratio gnuplot gntp gitignore-mode gitconfig-mode gh-md gandalf-theme flx-ido fill-column-indicator fancy-battery evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-lisp-state evil-indent-plus evil-iedit-state evil-args eval-sexp-fu emmet-mode elisp-slime-nav dtrt-indent docker-tramp define-word cython-mode company-web company-tern company-auctex company-anaconda cmake-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auctex-latexmk async anzu ansible-doc ansible ace-jump-helm-line ac-ispell))
- '(safe-local-variable-values
-   '((TeX-engine . pdflatex)
-     (TeX-command-extra-options . "-shell-escape"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 89)) (:foreground "#ccc" :background "#050505")))))
-)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(evil-want-Y-yank-to-eol nil)
+   '(ignored-local-variable-values '((evil-shift-width . 2)))
+   '(package-selected-packages
+     '(ac-ispell ace-jump-helm-line ace-link ace-window adaptive-wrap
+                 aggressive-indent alert anaconda-mode ansible ansible-doc anzu
+                 apiwrap async auctex auctex-latexmk auto-compile auto-complete
+                 auto-highlight-symbol auto-yasnippet avy bind-key bind-map
+                 clang-format clean-aindent-mode cmake-mode coffee-mode
+                 column-enforce-mode company company-anaconda company-ansible
+                 company-auctex company-c-headers company-emacs-eclim
+                 company-statistics company-tern company-web cython-mode dash
+                 dash-functional define-word diminish disaster docker docker-tramp
+                 dockerfile-mode drupal-mode dtrt-indent dumb-jump eclim
+                 elisp-slime-nav emmet-mode epl eval-sexp-fu evil evil-anzu
+                 evil-args evil-ediff evil-escape evil-exchange evil-iedit-state
+                 evil-indent-plus evil-lisp-state evil-magit evil-matchit evil-mc
+                 evil-nerd-commenter evil-numbers evil-search-highlight-persist
+                 evil-surround evil-tutor evil-unimpaired evil-visual-mark-mode
+                 evil-visualstar exec-path-from-shell expand-region eyebrowse f
+                 fancy-battery fill-column-indicator flx-ido flycheck
+                 flycheck-pos-tip fringe-helper fuzzy gandalf-theme ggtags gh
+                 gh-md ghub ghub+ gist git-commit git-link git-messenger
+                 git-timemachine gitattributes-mode gitconfig-mode
+                 github-browse-file github-clone github-search gitignore-mode gntp
+                 gnuplot golden-ratio google-translate goto-chg grandshell-theme
+                 haml-mode helm helm-ag helm-c-yasnippet helm-company helm-core
+                 helm-css-scss helm-descbinds helm-flx helm-gitignore helm-gtags
+                 helm-make helm-mode-manager helm-projectile helm-pydoc helm-swoop
+                 helm-themes help-fns+ hide-comnt highlight highlight-indentation
+                 highlight-numbers highlight-parentheses hl-todo ht htmlize
+                 hungry-delete hy-mode hydra ido-vertical-mode iedit indent-guide
+                 info+ jinja2-mode js-doc js2-mode js2-refactor json-mode
+                 json-reformat json-snatcher less-css-mode let-alist link-hint
+                 linum-relative live-py-mode livid-mode log4e logito lorem-ipsum
+                 lua-mode macrostep magit magit-gh-pulls magit-gitflow magit-popup
+                 magithub markdown-mode markdown-toc marshal mmm-mode move-text
+                 multiple-cursors neotree nginx-mode open-junk-file org
+                 org-bullets org-category-capture org-download org-mime
+                 org-plus-contrib org-pomodoro org-present org-projectile orgit
+                 packed paradox pcache pcre2el persp-mode php-auto-yasnippets
+                 php-extras php-mode phpcbf phpunit pip-requirements pkg-info
+                 popup popwin pos-tip powerline projectile pug-mode py-isort
+                 pyenv-mode pytest pythonic pyvenv quelpa rainbow-delimiters
+                 request restart-emacs s sass-mode scss-mode simple-httpd
+                 skewer-mode slim-mode smartparens smeargle spaceline
+                 spacemacs-theme sql-indent ssh-agency tablist tagedit tern
+                 toc-org ts-fold undo-tree use-package uuidgen vi-tilde-fringe
+                 vmd-mode volatile-highlights web-beautify web-mode which-key
+                 window-numbering winum with-editor ws-butler yaml-mode yapfify
+                 yasnippet))
+   '(safe-local-variable-values
+     '((TeX-engine . pdflatex) (TeX-command-extra-options . "-shell-escape"))))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(default ((((class color) (min-colors 89)) (:foreground "#ccc" :background "#050505")))))
+  )
