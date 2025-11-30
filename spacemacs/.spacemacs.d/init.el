@@ -37,6 +37,7 @@ This function should only modify configuration layer settings."
      erlang
      octave
      rust
+     eglot
      go
      nixos
      windows-scripts
@@ -720,7 +721,7 @@ This function is called at the very end of Spacemacs initialization."
                  evil-surround evil-tutor evil-unimpaired evil-visual-mark-mode
                  evil-visualstar exec-path-from-shell expand-region eyebrowse f
                  fancy-battery fill-column-indicator flx-ido flycheck
-                 flycheck-pos-tip fringe-helper fuzzy gandalf-theme ggtags gh
+                 flycheck-eglot flycheck-pos-tip fuzzy gandalf-theme ggtags gh
                  gh-md ghub ghub+ gist git-commit git-link git-messenger
                  git-timemachine gitattributes-mode gitconfig-mode
                  github-browse-file github-clone github-search gitignore-mode gntp
@@ -746,8 +747,8 @@ This function is called at the very end of Spacemacs initialization."
                  request restart-emacs s sass-mode scss-mode simple-httpd
                  skewer-mode slim-mode smartparens smeargle spaceline
                  spacemacs-theme sql-indent ssh-agency tablist tagedit tern
-                 toc-org ts-fold undo-tree use-package uuidgen vi-tilde-fringe
-                 vmd-mode volatile-highlights web-beautify web-mode which-key
+                 toc-org undo-tree use-package uuidgen vi-tilde-fringe vmd-mode
+                 volatile-highlights web-beautify web-mode which-key
                  window-numbering winum with-editor ws-butler yaml-mode yapfify
                  yasnippet))
    '(safe-local-variable-values
