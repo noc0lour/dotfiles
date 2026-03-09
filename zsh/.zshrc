@@ -13,6 +13,9 @@ elif [ "${system}" = "Linux" ]; then
 	plugins+=('virtualenvwrapper')
 fi
 
+export FZF_BASE=${HOME}/.fzf
+export FZF_DEFAULT_COMMAND='fzf'
+
 source $ZSH/oh-my-zsh.sh
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -73,8 +76,82 @@ function gfmu (){
 
 }
 
+unsetopt nomatch
+
+# shellcheck disable=2148,SC2168,SC1090,SC2125
+#local FOUND_ATUIN=$+commands[atuin]
+
+#if [[ $FOUND_ATUIN -eq 1 ]]; then
+#  source <(atuin init zsh)
+#fi
+
+atuin-setup() {
+        if ! which atuin &> /dev/null; then return 1; fi
+        bindkey '^E' _atuin_search_widget
+
+        export ATUIN_NOBIND="true"
+        eval "$(atuin init "zsh")"
+        fzf-atuin-history-widget() {
+            local selected num
+            setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2>/dev/null
+
+            # local atuin_opts="--cmd-only --limit ${ATUIN_LIMIT:-5000}"
+            local atuin_opts="--cmd-only"
+            local fzf_opts=(
+                --height=${FZF_TMUX_HEIGHT:-80%}
+                --tac
+                "-n2..,.."
+                --tiebreak=index
+                "--query=${LBUFFER}"
+                "+m"
+                "--bind=ctrl-d:reload(atuin search $atuin_opts -c $PWD),ctrl-r:reload(atuin search $atuin_opts)"
+            )
+
+            selected=$(
+                eval "atuin search ${atuin_opts}" |
+                    fzf "${fzf_opts[@]}"
+            )
+            local ret=$?
+            if [ -n "$selected" ]; then
+                # the += lets it insert at current pos instead of replacing
+                LBUFFER+="${selected}"
+            fi
+            zle reset-prompt
+            return $ret
+        }
+        zle -N fzf-atuin-history-widget
+        bindkey '^R' fzf-atuin-history-widget
+    }
+    atuin-setup
+
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 if [ "${system}" = "Darwin" ]; then
 	pyenv virtualenvwrapper
+function conda_init(){
+    # >>> conda initialize >>>
+    # !! Contents within this block are managed by 'conda init' !!
+    __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    else
+        if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+# . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"  # commented out by conda initialize
+        else
+            export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+        fi
+    fi
+    unset __conda_setup
+    # <<< conda initialize <<<
+}
+
+function radioconda_init(){
+    __conda_setup="$('/Users/andrej/radioconda/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    fi
+    unset __conda_setup
+}
 fi
+

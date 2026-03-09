@@ -7,8 +7,8 @@ export SUDO_EDITOR="$EDITOR"
 export SUDO_SYSTEMD_EDITOR="$EDITOR"
 export LD_LIBRARY_PATH="/usr/local/lib:/usr/lib:"$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH
-export GOPATH="/home/andrej/gopath"
-export PATH="/usr/lib/ccache/bin/:$GOPATH/bin/:"$PATH":/usr/local/sbin/:/usr/sbin/:/sbin/"
+export GOPATH=$(go env GOPATH)
+export PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/opt/gnu-tar/libexec/gnubin:/opt/homebrew/opt/llvm/bin:/usr/lib/ccache/bin/:$GOPATH/bin/:"$PATH":/usr/local/sbin/:/usr/sbin/:/sbin/:/Users/andrej/.local/bin/"
 # set input method to uim so .XCompose works
 export INPUT_METHOD=uim
 export GTK_IM_MODULE=uim
@@ -38,7 +38,14 @@ if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
     xrdb -merge ~/.Xresources
     startx
 fi
+system=$(uname -s)
+if [ $system = "darwin" ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  PYENV_PREFIX="$(pyenv prefix)"
+  export VIRTUALENVWRAPPER_PYTHON="$PYENV_PREFIX/bin/python"
+  export PATH="$PYENV_PREFIX/bin:$PATH"
+  eval "$(pyenv init --path)"
+  export CHROME_EXECUTABLE="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+fi
+
 . "$HOME/.cargo/env"
-#export PYENV_ROOT="$HOME/.pyenv"
-#export PATH="$PYENV_ROOT/bin:$PATH"
-#eval "$(pyenv init --path)"

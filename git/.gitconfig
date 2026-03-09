@@ -1,0 +1,10 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Andrej Rode
+	email = mail@andrejro.de
+
+[core]
+	excludesfile = ~/.config/git/global_ignore
+
+[includeIf "gitdir:~/git/cel/"]
+  path = ~/git/cel/.gitconfig
