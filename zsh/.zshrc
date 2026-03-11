@@ -4,6 +4,8 @@ export ZSH=${HOME}/.oh-my-zsh
 
 source ~/.profile
 
+export GPG_TTY=$(tty)
+
 plugins=(encode64 systemd git github cp nmap tmux-cssh colorize ssh-agent ansible pyenv fzf poetry poetry-env)
 
 export FZF_BASE=${HOME}/.fzf
