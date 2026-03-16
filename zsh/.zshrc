@@ -8,6 +8,7 @@ plugins=(encode64 systemd git github cp nmap tmux-cssh colorize ssh-agent ansibl
 
 system=$(uname -s)
 if [ "${system}" = "Darwin" ]; then
+	export GPG_TTY=$(tty)
 	plugins+=('pyenv')
 elif [ "${system}" = "Linux" ]; then
 	plugins+=('virtualenvwrapper')
